@@ -1,56 +1,77 @@
-import classes
+from classes import *
 import sqlite3
 
-class Database:
-    """Banco de dados kk"""
-    def __init__(self):
-        self.db = 'dados.db'
 
-
-    def connect(self):
-        """Conecta no banco e retorna a conexão e o cursor"""
-        conn = sqlite3.connect(self.db)
-        cur = conn.cursor()
-        return conn, cur
-
-
-    def insert(self, data:dict):
-        """    
-        Insere dados no banco de dados
-        
-        Args:
-            data: dicionário no formato {coluna : valor}
-        """
-
-        colunas = [i for i in data.keys()]
-
-        valores = tuple(data.values())
-
-        placeholders = ["? " for i in valores]
-
-        conn, cur = self.connect()
-
-        cur.execute(f"INSERT INTO {colunas} VALUES ({placeholders})", valores)
-
-
-def main_menu():
-    """Mostra as opções e retorna a opção desejada"""
-    print(
-        "="*40,
-        "\n 1 - Inserir um dado\n",
-        "2 - Remover um dado\n",
-        "3 - Alterar um dado\n",
-        "4 - Ver dados\n",
-        "="*40
-        )
-    option = int(input("Escolha uma opção: "))
-
-    return option
-
-# while True:
-#     option = main_menu()
 
 
 banco_1 = Database()
 
-banco_1.insert({""})
+class Menus:
+    def __init__(self) -> None:
+        
+        while True:
+            print(
+            "="*40,
+            "\n 1 - Inserir um dado\n",
+            "2 - Remover um dado\n",
+            "3 - Alterar um dado\n",
+            "4 - Ver dados\n"
+            "5 - Sair\n",
+            "="*40
+            )
+            self.option_main = int(input("Escolha uma opção: "))
+            
+            match self.option_main:
+                case 1: self.option_second = self.menu_insert()
+                case 5: break
+                
+    def menu_insert(self):
+        print(
+        "="*40,
+        "\n 1 - Inserir aluno\n",
+        "2 - Inserir professor\n",
+        "3 - inserir administrador\n",
+        "5 - Sair\n",
+        "="*40
+        )
+    
+        option = int(input("Escolha uma opção: "))
+    
+        match option:
+            case 1:
+                banco_1.insert(
+                    'aluno', 
+                    {
+                        'nome' : input('Digite o nome: '),
+                        'idade' : int(input('Digite a idade: ')),
+                        'genero' : input('Digite o gênero: '),
+                        'matricula' : input('Digite a matrícula: ')
+                        }
+                    )
+            case 2:
+                banco_1.insert(
+                    'professor', 
+                    {
+                        'nome' : input('Digite o nome: '),
+                        'idade' : int(input('Digite a idade: ')),
+                        'genero' : input('Digite o gênero: '),
+                        'disciplina' : input('Digite a disciplina: ')
+                        }
+                    )
+            case 3:
+                banco_1.insert(
+                    'administrador', 
+                    {
+                        'nome' : input('Digite o nome: '),
+                        'idade' : int(input('Digite a idade: ')),
+                        'genero' : input('Digite o gênero: '),
+                        'disciplina' : input('Digite o codigo: ')
+                        }
+                    )
+
+alunos = [
+    Aluno("Luiz", 18, "Masculino", "20232in007")
+]
+
+Menus()
+
