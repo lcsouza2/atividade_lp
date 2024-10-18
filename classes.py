@@ -1,3 +1,4 @@
+"""Classes de dados e classe do banco de dados"""
 import sqlite3
 
 class Pessoa:
@@ -64,12 +65,36 @@ class Database:
         conn, cur = self.connect()
 
         cur.execute(
-            f"INSERT INTO {table}({colunas}) VALUES ({", ".join("?" for i in valores)});",
+            f'''INSERT INTO {table} ({", ".join(i for i in data.keys())}) 
+                VALUES ({", ".join("?" for i in valores)});''',
             valores
             )
 
         conn.commit()
+        conn.close()
 
+    def remove(self, table:str, pk_column:str | tuple, pk_value:str | tuple):
+        """Remove um valor do banco"""
+        conn, cur = self.connect()
+
+        if type(pk_column) is str:
+            cur.execute(
+                f'''
+                DELETE FROM {table}
+                    WHERE ? = ?
+                    ''',
+                (pk_column, pk_value)
+                )
+            conn.commit()
+            conn.close()
+        else:
+            cur.execute(
+                f"""
+                DELETE FROM {table}
+                    WHERE {" AND ".join("? = ?" for i in pk_column)}
+                """,
+                (*pk_column, *pk_value)
+            )
     def select(self, table:str, condition:str | None):
         """Busca dados no banco"""
         conn, cur = self.connect()
@@ -81,3 +106,7 @@ class Database:
 
         cur.execute(f'SELECT * FROM {table}')
         return cur.fetchall()
+
+banco = Database()
+
+banco.remove("professor", ("nome", "idade", "genero", "disciplina"), ("Luiz", 18, "Masculino", "Programação"))
